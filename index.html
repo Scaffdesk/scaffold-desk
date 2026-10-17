@@ -88,6 +88,15 @@ input,textarea,select{width:100%;font:inherit;padding:12px 13px;border:1.5px sol
 .sw .av{width:38px;height:38px;font-size:14px}.sw b{display:block;font-size:14px;line-height:1.2}.sw small{display:block;font-size:12px;color:var(--mut)}
 .cam{display:inline-flex;align-items:center;gap:3px;padding:0 8px;height:38px;border:1.5px solid #cbd5e1;border-radius:10px;color:var(--mut);cursor:pointer;flex-shrink:0;margin-left:auto}.cam svg.ic{width:19px;height:19px}.cam b{font-size:12px}.cam.has{border-color:var(--amber);background:#fffbeb;color:var(--navy)}
 .chk .cam{margin-right:2px}.chk>span:first-child{flex:1}.cam-row{display:flex;align-items:center;gap:10px;margin:12px 0;color:var(--mut);font-weight:600;font-size:14px}.cam-row .cam{margin-left:0}
+.sec{margin:18px -18px 8px;padding:8px 18px;background:#f1f5f9;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:12.5px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--navy)}
+.chk.comp{flex-wrap:wrap;row-gap:4px}.chk.comp>span{flex:1 1 100%;font-weight:600}.chk.comp .ctl{display:flex;align-items:center;gap:6px;margin-left:auto}.chk.comp .ctl .cam{margin:0}
+.nbtn{display:inline-grid;place-items:center;width:38px;height:38px;border:1.5px solid #cbd5e1;border-radius:10px;background:#fff;color:var(--mut)}.nbtn svg.ic{width:18px;height:18px}
+.inote{margin:2px 0 6px;flex:1 1 100%;padding:9px 11px;font-size:14px}
+.chk.pre .pills .pill,.chk.comp .pills .pill{padding:6px 11px;min-height:38px;font-size:14px}
+.geo{display:flex;align-items:center;gap:8px;margin:8px 0 14px;padding:9px 12px;border-radius:10px;background:#f1f5f9;color:var(--mut);font-size:13.5px}.geo span{flex:1}.geo.ok{background:#ecfdf5;color:#166534}.geo .btn{margin:0}
+.gthumb{width:54px;height:40px;object-fit:cover;border-radius:6px;margin-right:4px;border:1px solid var(--line)}
+.chk .pill.on[data-v="x"],.chk.pre .pill.on[data-v="no"]{background:var(--red);border-color:var(--red)}.chk .pill.on[data-v="ok"],.chk.pre .pill.on[data-v="yes"]{background:#15803d;border-color:#15803d}.chk .pill.on[data-v="na"]{background:#64748b;border-color:#64748b}
+.chk.comp{padding:6px 0 4px;row-gap:2px}
 </style></head><body><div id="app"></div><script>/** @license
  *
  * jsPDF - PDF Document creation from JavaScript
@@ -615,7 +624,7 @@ function seedData() { const T = today(), d = n => addDays(T, n);
     { id: 'j1', ref: 'J-1001', client: 'Example Homes Ltd', site: 'Riverside Apartments', address: '12 Mill Lane, Sampletown', contact: 'Jo Bloggs 07700 900100', status: 'live', sup: 'p-sup' },
     { id: 'j2', ref: 'J-1002', client: 'Sample Council', site: 'St Example Primary School', address: 'School Road, Sampletown', contact: 'Facilities 01234 000222', status: 'live', sup: 'p-sup' },
     { id: 'j3', ref: 'J-1003', client: 'A. N. Other Builders', site: '7 Demo Close (re-roof)', address: '7 Demo Close, Otherville', contact: 'Andy 07700 900300', status: 'live', sup: 'p-sup' }];
-  const insp = (n, by, res = 'safe', type = '7-day') => ({ id: uid('in'), at: new Date(d(n) + 'T09:30:00').getTime(), date: d(n), type, by, result: res, items: {}, notes: res === 'safe' ? 'No defects.' : 'Missing toe board lift 3 - tagged red.' });
+  const insp = (n, by, res = 'safe', type = '7-day') => ({ id: uid('in'), at: new Date(d(n) + 'T09:30:00').getTime(), date: d(n), type, by, inspName: 'Chris Walker', inspRole: 'Advanced Scaffolder (CISRS)', result: res, pre: { 'Completed handover certificate': 'yes', 'Scafftag on site': 'yes', "Engineer's design available": 'na', 'Scafftag signed & dated': 'yes' }, items: Object.fromEntries(['Foundations', 'Base plates', 'Standards', 'Ledgers', 'Transoms (main)', 'Transoms (intermediate)', 'Ledger bracing', 'Face bracing', 'Plan bracing', 'Fittings', 'Ties', 'Scaffold boards', 'Board security', 'Top handrails', 'Middle guardrails', 'Toe boards', 'Brick guards', 'Gin wheels', 'Ladder access', 'Stair access', 'Loading bay', 'Protective fans', 'Debris netting', 'Monoflex sheeting', 'Rubbish chutes', 'Public protection measures'].map(t => [t, res !== 'safe' && t === 'Toe boards' ? 'x' : ['Gin wheels', 'Stair access', 'Loading bay', 'Protective fans', 'Monoflex sheeting', 'Rubbish chutes'].includes(t) ? 'na' : 'ok'])), itemNotes: res === 'safe' ? {} : { 'Toe boards': 'Toe board missing at lift 3' }, notes: res === 'safe' ? 'No defects.' : 'Missing toe board lift 3 - tagged red.', geo: { lat: 52.4862, lng: -1.8904, acc: 8 } });
   const scaffolds = [
     { id: 's1', tag: 'SC-0101', jobId: 'j1', location: 'North elevation, blocks A-B', kind: 'TG20', ref: 'TG20 compliance sheet CS-12', loadClass: '3 (General purpose 2.0 kN/m²)', lifts: 6, ties: 'Ring ties every 4 m', status: 'handed over', scafftag: 'green', erected: d(-20), handover: { date: d(-19), to: 'Jo Bloggs', signName: 'Jo Bloggs', by: 'p-sup', sig: null, use: 'Brickwork & windows' }, hire: { start: d(-19), weeks: 8, ext: [], strike: '' }, photos: [], insp: [insp(-12, 'p-sup'), insp(-5, 'p-sup')], log: [] },
     { id: 's2', tag: 'SC-0102', jobId: 'j1', location: 'South elevation, loading bay', kind: 'Bespoke', ref: 'Design D-2201 rev B', loadClass: '6 (Masonry / heavy duty 3.0 kN/m² + bay 10 kN)', lifts: 5, ties: 'Per design', status: 'handed over', scafftag: 'green', erected: d(-30), handover: { date: d(-29), to: 'Jo Bloggs', signName: 'Jo Bloggs', by: 'p-sup', use: 'Loading bay' }, hire: { start: d(-29), weeks: 4, ext: [{ at: d(-2), weeks: 4 }], strike: '' }, photos: [], insp: [insp(-9, 'p-sup')], log: [] },
@@ -639,8 +648,8 @@ function seedData() { const T = today(), d = n => addDays(T, n);
 seedData = (orig => function () { const D = orig(); if (typeof DEMO_PH === 'undefined') return D; const t0 = Date.now(), ph = (k, cap, by = 'p-sup', ago = 1) => ({ id: 'ph-' + k + '-' + Math.random().toString(36).slice(2, 6), at: t0 - ago * 864e5, by, cap, src: DEMO_PH[k] });
   const S = id => D.scaffolds.find(s => s.id === id), s1 = S('s1'), s2 = S('s2'), s3 = S('s3');
   s1.photos = [ph('elev', 'North elevation at handover', 'p-sup', 19), ph('tag', 'Inspection tag signed - safe to use', 'p-sup', 5)]; s2.photos = [ph('bay', 'Loading bay and gate', 'p-sup', 29)];
-  const li = s1.insp[s1.insp.length - 1]; li.itemPhotos = { 'Foundations & base plates': [ph('base', 'Base plates on sole boards', 'p-sup', 5)], 'Guard rails & toe boards': [ph('toe', 'Guard rails and toe boards complete', 'p-sup', 5)] };
-  s3.insp[0].itemPhotos = { 'Guard rails & toe boards': [ph('toe', 'Toe board missing at lift 3 - tagged red', 'p-sup', 2)] };
+  const li = s1.insp[s1.insp.length - 1]; li.itemPhotos = { 'Base plates': [ph('base', 'Base plates on sole boards', 'p-sup', 5)], 'Toe boards': [ph('toe', 'Guard rails and toe boards complete', 'p-sup', 5)] };
+  s3.insp[0].itemPhotos = { 'Toe boards': [ph('toe', 'Toe board missing at lift 3 - tagged red', 'p-sup', 2)] };
   D.moves.forEach(m => { if (m.kind === 'delivery' && !m.photos) m.photos = [ph('load', 'Load secured before leaving the yard', 'p-drv', 21)]; if (m.kind === 'collection') m.photos = [ph('ret', 'Boards and fittings returned to the yard', 'p-drv', 3)]; });
   const v1 = D.vehicles.find(v => v.id === 'v1'), v3 = D.vehicles.find(v => v.id === 'v3');
   (v1.defects || []).forEach(df => df.photos = [ph('lamp', df.note, 'p-drv')]);
@@ -1004,15 +1013,16 @@ viewLogin = function () { return `<div class="login"><div class="hero">${MARK}<h
 /* ---------- PDF styling ---------- */
 function pdfStyle(k, title, sub) { const doc = k.doc, NV = [15, 35, 64], AM = [245, 158, 11];
   const logo = (x, y, s) => { doc.setFillColor(...AM); doc.roundedRect(x, y, s, s, s * .23, s * .23, 'F'); doc.setFillColor(...NV); doc.roundedRect(x + s * .06, y + s * .06, s * .88, s * .88, s * .19, s * .19, 'F'); doc.setDrawColor(...AM); doc.setLineWidth(s * .07); doc.setLineCap('round'); [[.31, .22, .31, .8], [.69, .22, .69, .8], [.31, .34, .69, .34], [.31, .53, .69, .53], [.31, .72, .69, .72]].forEach(([a, b, c, d]) => doc.line(x + a * s, y + b * s, x + c * s, y + d * s)); doc.setDrawColor(255); doc.setLineWidth(s * .045); doc.line(x + .31 * s, y + .53 * s, x + .69 * s, y + .34 * s); doc.setLineCap('butt'); };
-  k.head = function () { doc.setFillColor(...NV); doc.rect(0, 0, 210, 27, 'F'); doc.setFillColor(...AM); doc.rect(0, 27, 210, 1.4, 'F');
+  const HD = new Set(), pg = () => doc.internal.getCurrentPageInfo().pageNumber, dPage = () => { if (!HD.has(pg())) { const y = k.y; k.head(); k.y = y; } };
+  k.head = function () { HD.add(pg()); doc.setFillColor(...NV); doc.rect(0, 0, 210, 27, 'F'); doc.setFillColor(...AM); doc.rect(0, 27, 210, 1.4, 'F');
     if (DEMO_CO.logo) { doc.setFillColor(255, 255, 255); doc.roundedRect(14, 5, 30, 17, 2, 2, 'F'); try { const r = Math.min(27 / (DEMO_CO.logoW || 4), 14 / (DEMO_CO.logoH || 1)); doc.addImage(DEMO_CO.logo, DEMO_CO.logo.startsWith('data:image/png') ? 'PNG' : 'JPEG', 15.5, 6.5, (DEMO_CO.logoW || 4) * r, (DEMO_CO.logoH || 1) * r); } catch (e) { } } else logo(14, 5.5, 16);
     const tx = DEMO_CO.logo ? 48 : 35; doc.setTextColor(255); doc.setFont('helvetica', 'bold'); doc.setFontSize(15.5); doc.text(title, tx, 13); doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(203, 213, 225); doc.text(doc.splitTextToSize(sub || '', 100)[0] || '', tx, 19.5);
     doc.setTextColor(255); doc.setFont('helvetica', 'bold'); doc.setFontSize(9); doc.text(DEMO_CO.name, 196, 11, { align: 'right' }); doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(203, 213, 225); doc.text([DEMO_CO.tel || '', DEMO_CO.email || ''].filter(Boolean), 196, 16, { align: 'right' }); doc.setTextColor(20); k.y = 37; };
   k.head();
   k.h2 = function (t) { k.need(13); doc.setFillColor(...AM); doc.rect(14, k.y - 4, 1.4, 5.4, 'F'); doc.setFont('helvetica', 'bold'); doc.setFontSize(11.5); doc.setTextColor(...NV); doc.text(t, 18, k.y); doc.setTextColor(20); k.y += 6.5; doc.setFont('helvetica', 'normal'); };
-  k.kv = function (rows) { doc.autoTable({ startY: k.y, body: rows.filter(r => r[1] != null && r[1] !== ''), theme: 'plain', styles: { fontSize: 9.2, cellPadding: { top: 2.2, bottom: 2.2, left: 3, right: 3 }, lineColor: [223, 229, 238], lineWidth: { bottom: .2 }, textColor: [15, 27, 45] }, columnStyles: { 0: { fontStyle: 'bold', cellWidth: 50, textColor: [92, 107, 128], fillColor: [246, 248, 251] } }, margin: { left: 14, right: 14, top: 34 },
+  k.kv = function (rows) { doc.autoTable({ startY: k.y, body: rows.filter(r => r[1] != null && r[1] !== ''), theme: 'plain', styles: { fontSize: 9.2, cellPadding: { top: 2.2, bottom: 2.2, left: 3, right: 3 }, lineColor: [223, 229, 238], lineWidth: { bottom: .2 }, textColor: [15, 27, 45] }, columnStyles: { 0: { fontStyle: 'bold', cellWidth: 50, textColor: [92, 107, 128], fillColor: [246, 248, 251] } }, margin: { left: 14, right: 14, top: 34 }, didDrawPage: dPage,
     didParseCell: d => { const v = String(d.cell.raw || ''); if (d.column.index === 1 && /^(NOT SAFE|DEFECT|NO\b|NOT SIGNED)/.test(v)) { d.cell.styles.textColor = [198, 40, 40]; d.cell.styles.fontStyle = 'bold'; } if (d.column.index === 1 && /^(SAFE TO USE|All items OK)/.test(v)) { d.cell.styles.textColor = [21, 128, 61]; d.cell.styles.fontStyle = 'bold'; } } }); k.y = doc.lastAutoTable.finalY + 6; };
-  k.table = function (head, body, opt = {}) { doc.autoTable(Object.assign({ startY: k.y, head: [head], body, theme: 'plain', headStyles: { fillColor: NV, textColor: 255, fontStyle: 'bold', fontSize: 8.6 }, alternateRowStyles: { fillColor: [246, 248, 251] }, styles: { fontSize: 8.6, cellPadding: { top: 1.9, bottom: 1.9, left: 2.5, right: 2.5 }, lineColor: [223, 229, 238], lineWidth: { bottom: .15 }, textColor: [15, 27, 45] }, margin: { left: 14, right: 14, top: 34 },
+  k.table = function (head, body, opt = {}) { doc.autoTable(Object.assign({ startY: k.y, head: [head], body, theme: 'plain', headStyles: { fillColor: NV, textColor: 255, fontStyle: 'bold', fontSize: 8.6 }, alternateRowStyles: { fillColor: [246, 248, 251] }, styles: { fontSize: 8.6, cellPadding: { top: 1.9, bottom: 1.9, left: 2.5, right: 2.5 }, lineColor: [223, 229, 238], lineWidth: { bottom: .15 }, textColor: [15, 27, 45] }, margin: { left: 14, right: 14, top: 34 }, didDrawPage: dPage,
     didParseCell: d => { if (d.section !== 'body') return; const v = String(d.cell.raw || ''); if (/^(DEFECT|NO\b|NOT SIGNED|NO - |RED)/i.test(v)) { d.cell.styles.textColor = [198, 40, 40]; d.cell.styles.fontStyle = 'bold'; } else if (/^(OK|Satisfactory|Yes)$/.test(v)) d.cell.styles.textColor = [21, 128, 61]; } }, opt)); k.y = doc.lastAutoTable.finalY + 6; };
   const _img = k.img; k.img = function (src, w = 60, h = 22) { if (!src) return; k.need(h + 6); doc.setDrawColor(203, 213, 225); doc.setLineWidth(.3); doc.roundedRect(14, k.y, w + 4, h + 4, 1.5, 1.5, 'S'); try { doc.addImage(src, src.startsWith('data:image/png') ? 'PNG' : 'JPEG', 16, k.y + 2, w, h); } catch (e) { } k.y += h + 8; };
   k.finish = function (name) { const n = doc.getNumberOfPages(); for (let i = 1; i <= n; i++) { doc.setPage(i); doc.setDrawColor(223, 229, 238); doc.setLineWidth(.3); doc.line(14, 287, 196, 287); doc.setFontSize(7.5); doc.setTextColor(120, 130, 145); doc.text(`${DEMO_CO.name} · generated ${fmtDT(Date.now())} with Scaffold Desk (demo)`, 14, 291.5); doc.text(`Page ${i} of ${n}`, 196, 291.5, { align: 'right' }); } return { doc, name, blob: doc.output('blob') }; };
@@ -1056,6 +1066,79 @@ function withFinishHook(make, extra) { const _style = pdfStyle; pdfStyle = funct
 ACT['veh-pdf'] = a => { const v = DB.get('vehicles', a.dataset.id), c = (v.checks || []).slice(-1)[0]; if (!c) return toast('No checks yet'); pdfOut(vehCheckPdf(v, c)); };
 { const _vr = ROUTES.vehicle; ROUTES.vehicle = id => { const v = DB.get('vehicles', id), h = _vr(id); return (v && (v.checks || []).length) ? h.replace(/(data-act="veh-check"[^>]*>[^<]*<\/button>)/, `$1${btn('Last check PDF', 'veh-pdf', `data-id="${id}"`)}`) : h; }; }
 /* show photos in the app: defects + item photos thumbnails */
+
+/* ---------- full scaffold inspection (pre-checks, component items, photos, signature + GPS) ---------- */
+const INSP_REASONS = [['7-day', 'Weekly / 7-day'], ['after bad weather', 'After adverse weather'], ['after alteration', 'After alteration'], ['handover', 'Handover'], ['pre-use', 'Pre-use'], ['other', 'Other']];
+const reasonLabel = v => (INSP_REASONS.find(r => r[0] === v) || [v, v])[1];
+const INSP_PRE_DEF = ['Completed handover certificate', 'Scafftag on site', "Engineer's design available", 'Scafftag signed & dated'];
+const INSP_ITEMS_DEF = ['Foundations', 'Base plates', 'Standards', 'Ledgers', 'Transoms (main)', 'Transoms (intermediate)', 'Ledger bracing', 'Face bracing', 'Plan bracing', 'Fittings', 'Ties', 'Scaffold boards', 'Board security', 'Top handrails', 'Middle guardrails', 'Toe boards', 'Brick guards', 'Gin wheels', 'Ladder access', 'Stair access', 'Loading bay', 'Protective fans', 'Debris netting', 'Monoflex sheeting', 'Rubbish chutes', 'Public protection measures'];
+const inspItems = () => { const L = SET().inspItems; return Array.isArray(L) && L.length ? L : INSP_ITEMS_DEF; };
+const inspPre = () => { const L = SET().inspPre; return Array.isArray(L) && L.length ? L : INSP_PRE_DEF; };
+const RES_L = { ok: 'Pass', x: 'FAIL', na: 'N/A', yes: 'Yes', no: 'NO' };
+IP.pin = '<path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>';
+IP.note = '<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/>';
+function getGeo(timeout = 8000) { return new Promise(res => { if (!navigator.geolocation) return res({ err: 'Location not supported on this device' }); let done = false; const t = setTimeout(() => { if (!done) { done = true; res({ err: 'Location timed out' }); } }, timeout);
+  navigator.geolocation.getCurrentPosition(p => { if (done) return; done = true; clearTimeout(t); res({ lat: +p.coords.latitude.toFixed(6), lng: +p.coords.longitude.toFixed(6), acc: Math.round(p.coords.accuracy || 0), at: Date.now() }); }, e => { if (done) return; done = true; clearTimeout(t); res({ err: e.code === 1 ? 'Location permission not given' : 'Location unavailable' }); }, { enableHighAccuracy: true, timeout, maximumAge: 60000 }); }); }
+const mapUrl = g => `https://www.openstreetmap.org/?mlat=${g.lat}&mlon=${g.lng}#map=18/${g.lat}/${g.lng}`;
+ACT['sc-insp'] = async a => { const s = DB.get('scaffolds', a.dataset.id), PRE = inspPre(), IT = inspItems(), def = s.status === 'adapted' ? 'after alteration' : '7-day';
+  PHX = {}; PHX_ITEMS = false; let geo = null;
+  const sec = t => `<div class="sec">${t}</div>`;
+  const html = `<h3>Inspect ${esc(s.tag)}</h3><p class="hint">${esc(jobName(s.jobId))} · ${fmtDT(Date.now())}</p>
+    ${sec('Details')}<p class="lbl">Reason for inspection</p>${pills('type', INSP_REASONS.filter(r => r[0] !== 'handover' || !s.handover), def)}
+    <label class="f" id="in-other-w" hidden><span>Other reason</span><input id="in-other"></label>
+    <label class="f"><span>Location on site</span><input id="in-loc" value="${esc(s.location || '')}"></label>
+    ${sec('Pre-checks')}${PRE.map((t, i) => `<div class="chk pre"><span>${esc(t)}</span>${pills('p' + i, [['yes', 'Yes'], ['no', 'No'], ['na', 'N/A']], '')}</div>`).join('')}
+    ${sec('Components')}<p class="hint">Pass / Fail / N/A. Tap ${ic('camera')} to photograph an item, ${ic('note')} to add a note.</p>
+    ${IT.map((t, i) => `<div class="chk comp"><span>${esc(t)}</span><div class="ctl">${camBtn(t)}<button type="button" class="nbtn" data-note="${i}" title="Note">${ic('note')}</button>${pills('i' + i, [['ok', 'Pass'], ['x', 'Fail'], ['na', 'N/A']], 'ok')}</div><input class="inote" id="note-${i}" placeholder="Note for ${esc(t)}" hidden></div>`).join('')}
+    ${sec('Additional photos')}<div class="cam-row">${camBtn('_gen', '')}<span id="in-gal">No additional photos</span></div>
+    <label class="f"><span>Notes / defects / actions</span><textarea id="in-n" rows="3"></textarea></label>
+    <p class="lbl">Result</p>${pills('res', [['safe', 'Safe to use'], ['unsafe', 'Not safe - tag red']], '')}
+    ${sec('Inspector')}<label class="f"><span>Name</span><input id="in-sn" value="${esc(ME.name)}"></label><label class="f"><span>Role / qualification</span><input id="in-sr" value="${esc((ME.cisrs && ME.cisrs.level) || ROLES[ME.role] || '')}"></label>
+    <p class="lbl">Signature</p>${sigPad('in-sig')}<div class="geo" id="in-geo">${ic('pin')}<span>Getting location…</span><button type="button" class="btn sm" id="in-geo-r">Retry</button></div>
+    <button class="btn primary block" id="ok" type="button">Save inspection</button><button class="btn block" data-r="">Cancel</button>`;
+  try { const r = await modal(html, (bg, close) => { wireSig(bg, 'in-sig');
+      const showGeo = g => { geo = g; $('#in-geo span', bg).innerHTML = g.err ? esc(g.err) + ' - inspection can still be saved' : `${g.lat}, ${g.lng} (±${g.acc} m)`; $('#in-geo', bg).classList.toggle('ok', !g.err); };
+      const ask = () => { $('#in-geo span', bg).textContent = 'Getting location…'; getGeo().then(showGeo); }; ask(); $('#in-geo-r', bg).addEventListener('click', ask);
+      bg.addEventListener('pill', e => { const d = e.target.dataset.pill; if (d === 'type') $('#in-other-w', bg).hidden = pillVal(bg, 'type') !== 'other'; if (/^i\d+$/.test(d) && pillVal(bg, d) === 'x') $('#note-' + d.slice(1), bg).hidden = false; });
+      bg.addEventListener('click', e => { const n = e.target.closest('.nbtn'); if (n) { const f = $('#note-' + n.dataset.note, bg); f.hidden = !f.hidden; if (!f.hidden) f.focus(); } });
+      bg.addEventListener('change', () => setTimeout(() => { const g = (PHX && PHX._gen) || []; $('#in-gal', bg).innerHTML = g.length ? g.map(p => `<img src="${p.src}" class="gthumb">`).join('') : 'No additional photos'; }, 400));
+      $('#ok', bg).addEventListener('click', () => { const res = pillVal(bg, 'res'), type = pillVal(bg, 'type');
+        if (!res) return toast('Pick the result'); const items = Object.fromEntries(IT.map((t, i) => [t, pillVal(bg, 'i' + i) || 'ok'])); if (res === 'safe' && Object.values(items).includes('x')) return toast('A failed item means the scaffold is not safe');
+        const pre = Object.fromEntries(PRE.map((t, i) => [t, pillVal(bg, 'p' + i)])); if (Object.values(pre).some(v => !v)) return toast('Answer each pre-check (Yes / No / N/A)');
+        if (type === 'other' && !$('#in-other', bg).value.trim()) return toast('Describe the other reason');
+        const sig = sigData(bg, 'in-sig'); if (!sig) return toast('Sign to confirm the inspection'); if (!$('#in-sn', bg).value.trim()) return toast('Inspector name needed');
+        const notes = Object.fromEntries(IT.map((t, i) => [t, ($('#note-' + i, bg).value || '').trim()]).filter(x => x[1]));
+        close({ type, other: $('#in-other', bg).value.trim(), loc: $('#in-loc', bg).value.trim(), pre, items, notes, res, text: $('#in-n', bg).value.trim(), sig, sn: $('#in-sn', bg).value.trim(), sr: $('#in-sr', bg).value.trim(), geo }); }); });
+    if (!r || typeof r !== 'object') return; const P = PHX || {}, gen = P._gen || [], ip = Object.assign({}, P); delete ip._gen; const now = Date.now();
+    const i = { id: uid('in'), at: now, date: today(), type: r.type, other: r.other || undefined, location: r.loc, by: ME.id, inspName: r.sn, inspRole: r.sr, pre: r.pre, items: r.items, itemNotes: r.notes, result: r.res, notes: r.text, sig: r.sig, sigAt: now, geo: r.geo && !r.geo.err ? r.geo : null, geoErr: r.geo && r.geo.err || (r.geo ? undefined : 'Location not captured') };
+    if (Object.keys(ip).length) i.itemPhotos = ip; if (gen.length) i.photos = gen;
+    s.insp.push(i); s.scafftag = r.res === 'safe' ? 'green' : 'red'; if (s.status === 'adapted' && r.res === 'safe') s.status = 'handed over'; s.log.push({ at: now, by: ME.id, t: `Inspected (${reasonLabel(r.type)}) - ${r.res}` }); DB.put('scaffolds', s); toast('Inspection saved - next due ' + fmtD(nextInsp(s))); render();
+  } finally { PHX = null; PHX_ITEMS = true; } };
+inPdf = function (s, i) { const k = pdfKit('Scaffold inspection report', `${s.tag} · ${jobName(s.jobId)}`), doc = k.doc, j = job(s.jobId);
+  k.kv([['Site', `${jobName(s.jobId)}${j.address ? ', ' + j.address : ''}`], ['Scaffold', `${s.tag} - ${s.kind || ''}${s.ref ? ' (' + s.ref + ')' : ''}`], ['Location', i.location || s.location], ['Date / time', fmtDT(i.at)], ['Inspector', i.inspName || person(i.by).name], ['Role / qualification', i.inspRole || ROLES[person(i.by).role] || ''], ['Reason for inspection', reasonLabel(i.type) + (i.other ? ' - ' + i.other : '')], ['Result', i.result === 'safe' ? 'SAFE TO USE' : 'NOT SAFE - DO NOT USE (Scafftag red)']]);
+  if (i.pre && Object.keys(i.pre).length) { k.h2('Pre-checks'); k.table(['Check', 'Answer'], Object.entries(i.pre).map(([t, v]) => [t, RES_L[v] || v || '-']), { columnStyles: { 1: { cellWidth: 30 } } }); }
+  const it = Object.entries(i.items || {}); if (it.length) { k.h2('Component inspection'); const N = i.itemNotes || {}, IPh = i.itemPhotos || {};
+    k.table(['Item', 'Result', 'Note', 'Photos'], it.map(([t, v]) => [t, RES_L[v] || v, N[t] || '', (IPh[t] || []).length ? String((IPh[t] || []).length) : '']), { columnStyles: { 0: { cellWidth: 52 }, 1: { cellWidth: 20 }, 3: { cellWidth: 16, halign: 'center' } } });
+    const fails = it.filter(([, v]) => v === 'x').length, pass = it.filter(([, v]) => v === 'ok').length, na = it.length - fails - pass; k.para(`Summary: ${pass} pass · ${fails} fail · ${na} N/A`); }
+  if (i.notes) { k.h2('Notes / defects / actions'); k.para(i.notes); }
+  const P = itemList(i.itemPhotos).map(x => Object.assign(x, { cap: (i.itemNotes || {})[x.cap] ? `${x.cap}: ${(i.itemNotes || {})[x.cap]}` : x.cap })); if (P.length) pdfPhotos(k, 'Item photos', P);
+  const G = (i.photos || []).map(p => ({ p, cap: p.cap || 'Additional photo' })); if (G.length) pdfPhotos(k, 'Additional photos', G);
+  k.need(56); k.h2('Inspector declaration'); k.para('I confirm I have inspected the scaffold described above and that the result recorded is a true record of its condition at the time of inspection.');
+  const y0 = k.y; k.img(i.sig); const tx = 84; doc.setFontSize(9); doc.setTextColor(92, 107, 128); [['Name', i.inspName || person(i.by).name], ['Role', i.inspRole || ROLES[person(i.by).role] || ''], ['Signed', fmtDT(i.sigAt || i.at)]].forEach(([a, b], n) => { doc.setFont('helvetica', 'bold'); doc.text(a, tx, y0 + 4 + n * 5.5); doc.setFont('helvetica', 'normal'); doc.setTextColor(15, 27, 45); doc.text(String(b || ''), tx + 20, y0 + 4 + n * 5.5); doc.setTextColor(92, 107, 128); });
+  doc.setFont('helvetica', 'bold'); doc.text('Location', tx, y0 + 20.5); doc.setFont('helvetica', 'normal');
+  if (i.geo) { doc.setTextColor(15, 27, 45); doc.text(`${i.geo.lat}, ${i.geo.lng} (±${i.geo.acc || '?'} m)`, tx + 20, y0 + 20.5); doc.setTextColor(29, 78, 216); doc.textWithLink('Open map of signing location', tx + 20, y0 + 26, { url: mapUrl(i.geo) }); doc.setDrawColor(29, 78, 216); doc.setLineWidth(.2); doc.line(tx + 20, y0 + 26.6, tx + 20 + doc.getTextWidth('Open map of signing location'), y0 + 26.6); }
+  else { doc.setTextColor(15, 27, 45); doc.text(i.geoErr || 'Not recorded', tx + 20, y0 + 20.5); }
+  doc.setTextColor(20); if (!i.sig) k.y = y0 + 30; else k.y = Math.max(k.y, y0 + 31);
+  return k.finish(`Inspection-${s.tag}-${i.date}.pdf`); };
+/* in-app list label */
+{ const _sc = ROUTES.scaffold; ROUTES.scaffold = id => { let h = _sc(id); INSP_REASONS.forEach(([v, l]) => { h = h.split(` · ${esc(v)} <span class="tag`).join(` · ${esc(l)} <span class="tag`); }); return h; }; }
+/* admin: edit inspection lists */
+{ const _ad = ROUTES.admin; ROUTES.admin = tab => { if (tab !== 'insp') return (_ad(tab) || '').replace('Fleet</a>', 'Fleet</a><a class="pill" href="#/admin/insp">Inspection items</a>'); if (!isOffice()) return card('', 'Office staff only');
+  const nav = _ad('company').match(/<div class="pills">[\s\S]*?<\/div>/)[0].replace(/ on"/g, '"').replace('Fleet</a>', 'Fleet</a><a class="pill on" href="#/admin/insp">Inspection items</a>');
+  return card('Admin', nav) + card('Scaffold inspection checklist', `<p class="hint">One item per line. Changes apply to new inspections; past reports keep the items they were done with.</p><label class="f"><span>Pre-checks (Yes / No / N/A)</span><textarea id="ai-pre" rows="5">${esc(inspPre().join('\n'))}</textarea></label><label class="f"><span>Component items (Pass / Fail / N/A)</span><textarea id="ai-items" rows="16">${esc(inspItems().join('\n'))}</textarea></label><div class="btns">${btn('Save checklist', 'ai-save', '', 'primary')}${btn('Restore default list', 'ai-def')}</div>`, 'id="adm-insp"'); }; }
+const linesOf = v => [...new Set(String(v || '').split('\n').map(x => x.trim()).filter(Boolean))];
+ACT['ai-save'] = () => { const P = linesOf($('#ai-pre').value), I = linesOf($('#ai-items').value); if (!I.length) return toast('Add at least one item'); saveSet(s => { s.inspPre = P; s.inspItems = I; }); toast(`Checklist saved - ${I.length} items, ${P.length} pre-checks`); render(); };
+ACT['ai-def'] = async () => { if (!(await confirmBox('Restore the default inspection checklist?', 'Restore'))) return; saveSet(s => { s.inspPre = null; s.inspItems = null; }); render(); };
 
 /* Multi-user backend (Supabase). Active when SD_CONFIG.url is set at build time; otherwise the app stays in single-device demo mode.
    Data: one row per document in public.docs (kind = job, scaffold, vehicle, stock, move, briefing, sign, request, daily, seq); people = public.profiles. */
@@ -1112,5 +1195,5 @@ if (CFG) {
 /* signatures as their own documents (operatives can sign without being able to edit the RAMS / talk) */
 const signsOf = b => (b.signs || []).concat(DB.all('signs').filter(s => s.bid === b.id && !(b.signs || []).some(x => x.pid === s.pid)));
 
-const APP_V='0.5.0';
+const APP_V='0.6.0';
 window.addEventListener('DOMContentLoaded',()=>{DB.load();const id=localStorage.getItem(KEY+'-me');if(id)ME=DB.get('people',id)||null;if(typeof CFG!=='undefined'&&CFG&&Cloud.sess){Cloud.start().then(()=>render()).catch(e=>{toast(e.message);});}render();if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js');});</script></body></html>
