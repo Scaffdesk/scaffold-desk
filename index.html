@@ -1208,7 +1208,7 @@ function logSend(sid, k, iid, e) { const s = DB.get('scaffolds', sid), rec = k =
 async function sendPdf(sid, k, iid, after) { if (!canSend()) return toast('Only supervisors, inspectors and the office send documents');
   const d = await sendDocFor(sid, k, iid); if (!d) return toast('Record not found'); const j = job(d.s.jobId), off = officeEmail(), srv = await mailServer();
   const R = jobContacts(j).map(c => [c.email, `${c.name || c.email}${c.role ? ' · ' + c.role : ''}`]).concat(off ? [[off, 'Office']] : []);
-  const subj = `${d.what} - ${jobName(d.s.jobId)} - ${fmtD(d.date)}`, body = `Please find attached the ${d.what.toLowerCase()} for ${jobName(d.s.jobId)} (${d.s.location || ''}).\n\n${ME.name}\n${DEMO_CO.name}${DEMO_CO.tel ? '\n' + DEMO_CO.tel : ''}`;
+  const subj = `${d.what} - ${jobName(d.s.jobId)} - ${fmtD(d.date)}`, body = `Please find attached the ${d.what.charAt(0).toLowerCase() + d.what.slice(1)} for ${jobName(d.s.jobId)} (${d.s.location || ''}).\n\n${ME.name}\n${DEMO_CO.name}${DEMO_CO.tel ? '\n' + DEMO_CO.tel : ''}`;
   const html = `<h3>${after ? 'Saved - send the PDF?' : 'Send PDF'}</h3><p class="hint">${esc(d.what)} · ${esc(d.pdf.name)}</p>
     <p class="lbl">Recipients ${j.contacts && j.contacts.length ? '' : `<span class="hint">(no job contacts yet${isSup() ? ' - add them on the job page' : ''})</span>`}</p>${R.length ? pills('rc', R, '').replace('data-pill="rc"', 'data-pill="rc" data-multi') : ''}
     <label class="f"><span>Other email address(es)</span><input id="sp-to" type="email" inputmode="email" autocomplete="email" placeholder="name@example.com, ..."></label>
