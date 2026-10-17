@@ -102,6 +102,12 @@ input,textarea,select{width:100%;font:inherit;padding:12px 13px;border:1.5px sol
 .pick{display:flex;flex-direction:column;gap:8px}.pick-row{display:flex;align-items:center;gap:12px;text-align:left;width:100%;border:1.5px solid var(--line);background:#fff;border-radius:14px;padding:12px;font:inherit;color:var(--ink);cursor:pointer;min-height:64px}.pick-row:active{background:#f1f5f9}
 .pr-main{flex:1;display:flex;flex-wrap:wrap;gap:6px;align-items:center}.pr-main b{color:var(--navy);font-size:16px}.pr-main small{flex:1 1 100%;color:var(--mut);font-size:13px}
 .tagdot{width:16px;height:16px;border-radius:50%;flex-shrink:0;background:#f59e0b;box-shadow:0 0 0 3px #fff,0 0 0 4.5px #cbd5e1}.tagdot.green{background:#16a34a}.tagdot.red{background:#dc2626}
+/* send PDF */
+.sentl{display:flex;gap:6px;align-items:flex-start;font-size:12.5px;color:#2f6b3a;margin:4px 0 0}.sentl svg{width:14px;height:14px;flex:none;margin-top:2px}
+.cbx{display:flex;gap:8px;align-items:center;margin:8px 0;font-size:14px}.cbx input{width:20px;height:20px}
+.sp-st{background:#f3f6fa;border-radius:10px;padding:8px 10px;margin:8px 0}.sp-st svg{width:14px;height:14px;vertical-align:-2px}
+.crow{border:1px solid #e3e8ef;border-radius:12px;padding:8px 10px;margin:0 0 10px}
+[data-pill="rc"]{flex-wrap:wrap}
 </style></head><body><div id="app"></div><script>/** @license
  *
  * jsPDF - PDF Document creation from JavaScript
@@ -626,9 +632,9 @@ function seedData() { const T = today(), d = n => addDays(T, n);
     { id: 'p-drv', name: 'Lee Turner', role: 'driver', mobile: '07700900005', pin: '5555', cisrs: { level: 'Scaffolders Labourer', no: 'C-102020', exp: d(500) }, licence: { cats: 'B, C, C+E', exp: d(800) }, tacho: { no: 'DRV-0042', exp: d(20) }, cpc: d(70), cards: [{ type: 'HIAB / lorry loader (ALLMI)', exp: d(250) }] },
     { id: 'p-yard', name: 'Pat Reid', role: 'yard', mobile: '07700900006', pin: '6666', cisrs: { level: 'Scaffolders Labourer', no: 'C-103030', exp: d(220) }, cards: [{ type: 'Forklift (counterbalance)', exp: d(90) }] }];
   const jobs = [
-    { id: 'j1', ref: 'J-1001', client: 'Example Homes Ltd', site: 'Riverside Apartments', address: '12 Mill Lane, Sampletown', contact: 'Jo Bloggs 07700 900100', status: 'live', sup: 'p-sup' },
-    { id: 'j2', ref: 'J-1002', client: 'Sample Council', site: 'St Example Primary School', address: 'School Road, Sampletown', contact: 'Facilities 01234 000222', status: 'live', sup: 'p-sup' },
-    { id: 'j3', ref: 'J-1003', client: 'A. N. Other Builders', site: '7 Demo Close (re-roof)', address: '7 Demo Close, Otherville', contact: 'Andy 07700 900300', status: 'live', sup: 'p-sup' }];
+    { id: 'j1', ref: 'J-1001', client: 'Example Homes Ltd', site: 'Riverside Apartments', address: '12 Mill Lane, Sampletown', contact: 'Jo Bloggs 07700 900100', contacts: [{ name: 'Jo Bloggs', role: 'Site manager', email: 'jo.bloggs@example-homes.example', tel: '07700 900100' }, { name: 'Example Homes H&S', role: 'Client', email: 'safety@example-homes.example', tel: '' }], status: 'live', sup: 'p-sup' },
+    { id: 'j2', ref: 'J-1002', client: 'Sample Council', site: 'St Example Primary School', address: 'School Road, Sampletown', contact: 'Facilities 01234 000222', contacts: [{ name: 'Facilities team', role: 'Client', email: 'facilities@sample-council.example', tel: '01234 000222' }], status: 'live', sup: 'p-sup' },
+    { id: 'j3', ref: 'J-1003', client: 'A. N. Other Builders', site: '7 Demo Close (re-roof)', address: '7 Demo Close, Otherville', contact: 'Andy 07700 900300', contacts: [{ name: 'Andy', role: 'Site contact', email: 'andy@an-other-builders.example', tel: '07700 900300' }], status: 'live', sup: 'p-sup' }];
   const insp = (n, by, res = 'safe', type = '7-day') => ({ id: uid('in'), at: new Date(d(n) + 'T09:30:00').getTime(), date: d(n), type, by, inspName: 'Chris Walker', inspRole: 'Advanced Scaffolder (CISRS)', result: res, pre: { 'Completed handover certificate': 'yes', 'Scafftag on site': 'yes', "Engineer's design available": 'na', 'Scafftag signed & dated': 'yes' }, items: Object.fromEntries(['Foundations', 'Base plates', 'Standards', 'Ledgers', 'Transoms (main)', 'Transoms (intermediate)', 'Ledger bracing', 'Face bracing', 'Plan bracing', 'Fittings', 'Ties', 'Scaffold boards', 'Board security', 'Top handrails', 'Middle guardrails', 'Toe boards', 'Brick guards', 'Gin wheels', 'Ladder access', 'Stair access', 'Loading bay', 'Protective fans', 'Debris netting', 'Monoflex sheeting', 'Rubbish chutes', 'Public protection measures'].map(t => [t, res !== 'safe' && t === 'Toe boards' ? 'x' : ['Gin wheels', 'Stair access', 'Loading bay', 'Protective fans', 'Monoflex sheeting', 'Rubbish chutes'].includes(t) ? 'na' : 'ok'])), itemNotes: res === 'safe' ? {} : { 'Toe boards': 'Toe board missing at lift 3' }, notes: res === 'safe' ? 'No defects.' : 'Missing toe board lift 3 - tagged red.', geo: { lat: 52.4862, lng: -1.8904, acc: 8 } });
   const scaffolds = [
     { id: 's1', tag: 'SC-0101', jobId: 'j1', location: 'North elevation, blocks A-B', kind: 'TG20', ref: 'TG20 compliance sheet CS-12', loadClass: '3 (General purpose 2.0 kN/m²)', lifts: 6, ties: 'Ring ties every 4 m', status: 'handed over', scafftag: 'green', erected: d(-20), handover: { date: d(-19), to: 'Jo Bloggs', signName: 'Jo Bloggs', by: 'p-sup', sig: null, use: 'Brickwork & windows' }, hire: { start: d(-19), weeks: 8, ext: [], strike: '' }, photos: [], insp: [insp(-12, 'p-sup'), insp(-5, 'p-sup')], log: [] },
@@ -1179,6 +1185,79 @@ const INSP_DENY = ['note-new', 'xfer-new', 'veh-check', 'veh-defect', 'veh-edit'
 { const _s = shell; shell = function (body, cur) { let h = _s(body, cur); if (isInsp()) h = h.replace(/<button class="btn[^"]*" data-act="([a-z-]+)"[^>]*>[\s\S]*?<\/button>/g, (m, a) => INSP_DENY.includes(a) ? '' : m); return h; }; }
 INSP_DENY.forEach(k => { const f = ACT[k]; if (!f) return; ACT[k] = (...a) => isInsp() ? toast('Inspectors cannot do this - ask a supervisor or the office') : f(...a); });
 
+/* ---------- Send PDF: handover certificates & inspection reports ----------
+   After saving, and from past records: pick job contacts / office or type an email. Routes: server email (send-pdf edge function, Resend) when set up,
+   the phone's share sheet (navigator.share with the PDF file), or the email app (mailto + PDF download). Each send is logged on the record. */
+IP.send = '<path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/>';
+const EMAIL_RE = /^[^@\s,;<>]+@[^@\s,;<>]+\.[A-Za-z]{2,}$/;
+const canSend = () => !!(ME && (isSup() || isInsp()));
+const officeEmail = () => (SET().company.email || '').trim();
+const jobContacts = j => (j && j.contacts || []).filter(c => c && c.email);
+const splitEmails = v => String(v || '').split(/[\s,;]+/).map(x => x.trim().toLowerCase()).filter(Boolean);
+const sentLine = L => (L || []).map(x => `<div class="sentl">${ic('send')}<span>Sent to ${esc(x.to.join(', '))}${x.cc && x.cc.length ? ` (cc ${esc(x.cc.join(', '))})` : ''} · ${fmtDT(x.at)} · ${esc(x.via)}${x.by ? ' · ' + esc(person(x.by).name) : ''}</span></div>`).join('');
+let MAIL_SRV = null; // null = unknown; {configured}
+async function mailServer() { if (typeof Cloud === 'undefined' || !Cloud.sess || !navigator.onLine) return { configured: false, why: typeof Cloud === 'undefined' || !Cloud.sess ? 'demo' : 'offline' };
+  if (MAIL_SRV) return MAIL_SRV; try { MAIL_SRV = await Cloud.api('/functions/v1/send-pdf', { method: 'POST', body: { action: 'status' } }); } catch (e) { return { configured: false, why: e.message }; } return MAIL_SRV; }
+const blobB64 = b => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1]); r.onerror = rej; r.readAsDataURL(b); });
+async function sendDocFor(sid, k, iid) { const s = DB.get('scaffolds', sid), i = k === 'insp' ? (s.insp || []).find(x => x.id === iid) : null; if (!s || (k === 'insp' && !i) || (k === 'hand' && !s.handover)) return null;
+  if (typeof photosReady === 'function') await photosReady(k === 'insp' ? allPhotos(i) : (s.photos || []));
+  const pdf = k === 'insp' ? inPdf(s, i) : scHandPdf(s), what = k === 'insp' ? `Scaffold inspection report (${i.type === 'handover' ? 'handover' : i.type}) - ${s.tag}` : `Scaffold handover certificate - ${s.tag}`;
+  return { s, i, pdf, what, date: k === 'insp' ? i.date : s.handover.date }; }
+function logSend(sid, k, iid, e) { const s = DB.get('scaffolds', sid), rec = k === 'insp' ? s.insp.find(x => x.id === iid) : s.handover; if (!rec) return; rec.sent = (rec.sent || []).concat([e]);
+  s.log = (s.log || []).concat([{ at: e.at, by: ME.id, t: `${k === 'insp' ? 'Inspection report' : 'Handover certificate'} sent to ${e.to.join(', ')}${e.cc.length ? ' (cc ' + e.cc.join(', ') + ')' : ''} by ${e.via}` }]); DB.put('scaffolds', s); }
+async function sendPdf(sid, k, iid, after) { if (!canSend()) return toast('Only supervisors, inspectors and the office send documents');
+  const d = await sendDocFor(sid, k, iid); if (!d) return toast('Record not found'); const j = job(d.s.jobId), off = officeEmail(), srv = await mailServer();
+  const R = jobContacts(j).map(c => [c.email, `${c.name || c.email}${c.role ? ' · ' + c.role : ''}`]).concat(off ? [[off, 'Office']] : []);
+  const subj = `${d.what} - ${jobName(d.s.jobId)} - ${fmtD(d.date)}`, body = `Please find attached the ${d.what.toLowerCase()} for ${jobName(d.s.jobId)} (${d.s.location || ''}).\n\n${ME.name}\n${DEMO_CO.name}${DEMO_CO.tel ? '\n' + DEMO_CO.tel : ''}`;
+  const html = `<h3>${after ? 'Saved - send the PDF?' : 'Send PDF'}</h3><p class="hint">${esc(d.what)} · ${esc(d.pdf.name)}</p>
+    <p class="lbl">Recipients ${j.contacts && j.contacts.length ? '' : `<span class="hint">(no job contacts yet${isSup() ? ' - add them on the job page' : ''})</span>`}</p>${R.length ? pills('rc', R, '').replace('data-pill="rc"', 'data-pill="rc" data-multi') : ''}
+    <label class="f"><span>Other email address(es)</span><input id="sp-to" type="email" inputmode="email" autocomplete="email" placeholder="name@example.com, ..."></label>
+    ${off ? `<label class="cbx"><input type="checkbox" id="sp-cc" checked> CC office (${esc(off)})</label>` : ''}
+    <label class="f"><span>Message</span><textarea id="sp-msg" rows="3">${esc(body)}</textarea></label>
+    <div class="sp-st hint" id="sp-st">${srv.configured ? `${ic('send')} Emailed from the Scaffold Desk mail service with the PDF attached.` : `Direct email isn't set up${srv.why === 'offline' ? ' (offline)' : ''} - use <b>Share</b> to attach the PDF to an email / WhatsApp, or your email app.`}</div>
+    ${srv.configured ? `<button class="btn primary block" id="sp-mail" type="button">${ic('send')} Email PDF</button>` : ''}
+    <button class="btn ${srv.configured ? '' : 'primary'} block" id="sp-share" type="button">Share PDF (phone)…</button>
+    <button class="btn block" id="sp-app" type="button">Open in email app</button>
+    <button class="btn block" id="sp-skip" type="button" data-r="">${after ? 'Not now' : 'Close'}</button>`;
+  await modal(html, (bg, close) => {
+    const who = need => { const to = [...new Set($$('[data-pill="rc"] .pill.on', bg).map(b => b.dataset.v).concat(splitEmails($('#sp-to', bg).value)))], bad = to.filter(x => !EMAIL_RE.test(x));
+      if (bad.length) { toast('Check email: ' + bad.join(', ')); return null; } const cc = $('#sp-cc', bg) && $('#sp-cc', bg).checked && off && !to.includes(off.toLowerCase()) ? [off.toLowerCase()] : [];
+      if (need && !to.length) { toast('Pick or type at least one recipient'); return null; } return { to, cc }; };
+    const done = (w, via, msg) => { logSend(sid, k, iid, { at: Date.now(), by: ME.id, to: w.to.length ? w.to : ['(chosen in share sheet)'], cc: w.cc, via }); toast(msg, 3500); close('sent'); render(); };
+    const st = t => { $('#sp-st', bg).innerHTML = t; };
+    $('#sp-mail', bg) && $('#sp-mail', bg).addEventListener('click', async e => { const w = who(true); if (!w) return; e.target.disabled = true; st('Sending…');
+      try { const r = await Cloud.api('/functions/v1/send-pdf', { method: 'POST', body: { to: w.to, cc: w.cc, replyTo: off, subject: subj, text: $('#sp-msg', bg).value, filename: d.pdf.name, pdf: await blobB64(d.pdf.blob) } }); done({ to: r.to || w.to, cc: r.cc || w.cc }, 'email', 'PDF emailed to ' + w.to.join(', ')); }
+      catch (x) { e.target.disabled = false; st(`Email failed: ${esc(x.message)}. Use Share or your email app instead.`); } });
+    $('#sp-share', bg).addEventListener('click', async () => { const w = who(false); if (!w) return; const f = new File([d.pdf.blob], d.pdf.name, { type: 'application/pdf' });
+      if (navigator.canShare && navigator.share && navigator.canShare({ files: [f] })) { try { await navigator.share({ files: [f], title: subj, text: $('#sp-msg', bg).value }); done(w, 'phone share', 'Shared'); } catch (x) { if (x.name !== 'AbortError') st('Share failed: ' + esc(x.message)); } return; }
+      st('This browser cannot share files - the PDF has been downloaded; attach it in your email app.'); pdfOut(d.pdf); });
+    $('#sp-app', bg).addEventListener('click', () => { const w = who(true); if (!w) return; pdfOut(d.pdf);
+      const u = `mailto:${w.to.map(encodeURIComponent).join(',')}?${w.cc.length ? 'cc=' + encodeURIComponent(w.cc.join(',')) + '&' : ''}subject=${encodeURIComponent(subj)}&body=${encodeURIComponent($('#sp-msg', bg).value + '\n\n(PDF attached: ' + d.pdf.name + ')')}`;
+      window.__lastMailto = u; try { const a = document.createElement('a'); a.href = u; a.target = '_self'; if (!window.__noMailto) a.click(); } catch (x) { } done(w, 'email app', 'Email app opened - attach the downloaded PDF ' + d.pdf.name); });
+  }); }
+ACT['send-pdf'] = a => sendPdf(a.dataset.id, a.dataset.k, a.dataset.i, false);
+/* send step straight after saving */
+{ const f = ACT['sc-insp']; ACT['sc-insp'] = async a => { const id = a.dataset.id, n0 = (DB.get('scaffolds', id).insp || []).length; await f(a); const s = DB.get('scaffolds', id); if ((s.insp || []).length > n0 && canSend()) await sendPdf(id, 'insp', s.insp[s.insp.length - 1].id, true); }; }
+{ const f = ACT['sc-hand']; ACT['sc-hand'] = async a => { const id = a.dataset.id, had = !!DB.get('scaffolds', id).handover; await f(a); if (!had && DB.get('scaffolds', id).handover && canSend()) await sendPdf(id, 'hand', '', true); }; }
+/* Send buttons + sent log on the scaffold screen */
+{ const _s = ROUTES.scaffold; ROUTES.scaffold = id => { let h = _s(id); const s = DB.get('scaffolds', id); if (!s) return h; const ok = canSend();
+  h = h.replace(/(<button class="btn sm" data-act="in-pdf" data-id="[^"]*" data-i="([^"]*)">[\s\S]*?<\/button>)/g, (m, b, iid) => { const i = (s.insp || []).find(x => x.id === iid) || {}; return b + (ok ? btn(`${ic('send')} Send`, 'send-pdf', `data-id="${id}" data-k="insp" data-i="${iid}"`, 'sm') : '') + sentLine(i.sent); });
+  if (s.handover) h = h.replace(/(<button class="btn [^"]*" data-act="sc-hand-pdf" data-id="[^"]*">[\s\S]*?<\/button>)/, b => b + (ok ? btn(`${ic('send')} Send handover PDF`, 'send-pdf', `data-id="${id}" data-k="hand"`) : '')).replace(/(<h2>Actions<\/h2>[\s\S]*?<\/div>)/, m => m + sentLine(s.handover.sent));
+  return h; }; }
+/* job contacts (client / site) with email addresses */
+{ const _j = ROUTES.job; ROUTES.job = id => { const h = _j(id), j = job(id); if (!j.id) return h; const C = j.contacts || [];
+  const c = card('Contacts', (C.length ? C.map(x => `<div class="item"><div class="t1"><b>${esc(x.name || '-')}</b> ${x.role ? tag(x.role, 'blue') : ''}</div><div class="t2">${x.email ? `<a href="mailto:${esc(x.email)}">${esc(x.email)}</a>` : 'no email'}${x.tel ? ` · <a href="tel:${esc(x.tel.replace(/\s/g, ''))}">${esc(x.tel)}</a>` : ''}</div></div>`).join('') : '<p class="hint">No contacts with email yet - add the client / site contacts so documents can be sent to them.</p>') + (isSup() ? btn('Edit contacts', 'job-contacts', `data-id="${id}"`) : ''));
+  const k = h.indexOf('<section class="card"', 1); return k > 0 ? h.slice(0, k) + c + h.slice(k) : h + c; }; }
+ACT['job-contacts'] = async a => { const j = job(a.dataset.id); let C = (j.contacts || []).map(x => Object.assign({}, x)); if (!C.length && j.contact) { const m = j.contact.match(/^(.*?)\s*((?:\+?\d[\d ]{6,}))?$/); C = [{ name: (m && m[1]) || j.contact, role: 'Site contact', email: '', tel: (m && m[2]) || '' }]; }
+  const row = (x, i) => `<div class="crow" data-i="${i}">${[['name', 'Name'], ['role', 'Role (e.g. Client, Site manager)'], ['email', 'Email'], ['tel', 'Phone']].map(([f, l]) => `<label class="f"><span>${l}</span><input data-f="${f}" ${f === 'email' ? 'type="email" inputmode="email"' : f === 'tel' ? 'inputmode="tel"' : ''} value="${esc(x[f] || '')}"></label>`).join('')}<button type="button" class="btn sm danger" data-del="${i}">Remove</button></div>`;
+  const r = await modal(`<h3>Contacts - ${esc(j.ref)}</h3><div id="c-rows">${C.map(row).join('')}</div><button type="button" class="btn" id="c-add">+ Add contact</button><button class="btn primary block" id="ok" type="button">Save</button><button class="btn block" data-r="">Cancel</button>`, (bg, close) => {
+    const read = () => $$('.crow', bg).map(r => Object.fromEntries($$('[data-f]', r).map(i => [i.dataset.f, i.value.trim()])));
+    $('#c-add', bg).addEventListener('click', () => { $('#c-rows', bg).insertAdjacentHTML('beforeend', row({ role: (read().length ? 'Site contact' : 'Client') }, $$('.crow', bg).length)); });
+    bg.addEventListener('click', e => { const d = e.target.closest('[data-del]'); if (d) d.closest('.crow').remove(); });
+    $('#ok', bg).addEventListener('click', () => { const L = read().filter(x => x.name || x.email || x.tel), bad = L.filter(x => x.email && !EMAIL_RE.test(x.email)); if (bad.length) return toast('Check email: ' + bad.map(x => x.email).join(', ')); close(L); }); });
+  if (!Array.isArray(r)) return; j.contacts = r.map(x => Object.assign(x, { email: x.email.toLowerCase() })); DB.put('jobs', j); toast('Contacts saved'); render(); };
+INSP_DENY.push('job-contacts');
+
 /* Multi-user backend (Supabase). Active when SD_CONFIG.url is set at build time; otherwise the app stays in single-device demo mode.
    Data: one row per document in public.docs (kind = job, scaffold, vehicle, stock, move, briefing, sign, request, daily, seq); people = public.profiles. */
 const CFG = (typeof SD_CONFIG !== 'undefined' && SD_CONFIG.url) ? SD_CONFIG : null;
@@ -1234,5 +1313,5 @@ if (CFG) {
 /* signatures as their own documents (operatives can sign without being able to edit the RAMS / talk) */
 const signsOf = b => (b.signs || []).concat(DB.all('signs').filter(s => s.bid === b.id && !(b.signs || []).some(x => x.pid === s.pid)));
 
-const APP_V='0.7.0';
+const APP_V='0.8.0';
 window.addEventListener('DOMContentLoaded',()=>{DB.load();const id=localStorage.getItem(KEY+'-me');if(id)ME=DB.get('people',id)||null;if(typeof CFG!=='undefined'&&CFG&&Cloud.sess){Cloud.start().then(()=>render()).catch(e=>{toast(e.message);});}render();if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js');});</script></body></html>
